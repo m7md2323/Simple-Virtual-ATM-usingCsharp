@@ -79,6 +79,8 @@ namespace ATM
                 //handling the case of correct customerID and PIN
                 else
                 {
+                    customers.CustomerID = customerID;
+                    customers.CustomerPIN = PIN;
                     Console.WriteLine($"WELCOME MR {dataBase.CustomerID_Name[customerID].ToUpper()} TO OUR ATM");
                 }
             }
