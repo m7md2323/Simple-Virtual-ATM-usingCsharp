@@ -7,22 +7,21 @@ using System.Threading.Tasks;
 
 namespace ATM
 {
+    
     internal class Customer
     {
         string firstName;
         string lastName;
         int age;
-        int accountBalance;
         int customerID;
         int CustomerID_PIN;
 
-        static int CustomerCounter = 142;
+        static int CustomerCounter = 2;
         public Customer()
         {
             firstName = null;
             lastName = null;
             age = 0;
-            accountBalance = 100;
         }
 
         public string FirstName
@@ -56,33 +55,36 @@ namespace ATM
         {
             return firstName + " " + lastName;
         }
-        public void BuildNewAccount()
+        public bool BuildNewAccount()
         {
             Random rand = new Random();// to generate PIN's
             Write("PLEASE ENTER THE INFORMATION BELOW :\nFIRST NAME : ");
-            FirstName = ReadLine();
-            Write("LAST NAME : ");
-            LastName = ReadLine();
-            Write("AGE : ");
-            Age = Convert.ToInt32(ReadLine());
+
+             FirstName = ReadLine();
+             Write("LAST NAME : ");
+             LastName = ReadLine();
+            
+            //exception handling for the case of entering a string instead of a number
+            try
+            {
+                Write("AGE : ");
+                Age = Convert.ToInt32(ReadLine());
+            }
+            catch (FormatException)
+            {
+                UserMessages.Instance.WriteException(Exception_Messages.INVALID_AGE);
+                return false;
+            }
+
+            if (Age < 18) { UserMessages.Instance.WriteException(Exception_Messages.INVALID_AGE); return false; }
             customerID = CustomerCounter++;
             WriteLine("MR " + firstName + " " + lastName + " WITH CUSTOMER ID " + CustomerID);
             CustomerPIN = rand.Next(111, 999);
             WriteLine("YOUR PIN FOR YOUR NEW ACCOUNT IS " + CustomerPIN + " (PLEASE SAVE IT AND DON'T SHARE IT WITH ANYONE!!)");
 
-            WriteLine
-                (
-                "                                                 " +
-                "########--" +
-                "THANKS FOR REGESTERING TO OUR BANK, NOW YOU CAN WITHDRAWN OR INSERT MONEY AS YOU LIKE" +
-                "--########"
-                );
-            for (int i = 0; i < 210; i++)
-            {
-                Write("#");
-            }
-            WriteLine();
-
+            UserMessages.Instance.WriteLayout(Layout_Messages.THANKS_FOR_REGESTERING_MESSAGE);
+            UserMessages.Instance.WriteLayout(Layout_Messages.FULL_LINE);
+            return true;
         }
 
     }

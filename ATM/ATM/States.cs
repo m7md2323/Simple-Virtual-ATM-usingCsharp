@@ -9,26 +9,17 @@ namespace ATM
 {
     internal class States
     {
-        static ATMDataBase dataBase = new ATMDataBase();
-        static Customer customers = new Customer();
+        private static ATMDataBase dataBase = new ATMDataBase();
+        private static Customer customers = new Customer();
         static public void loadFrontScreen()
         {
-            for (int i = 0; i < 210; i++)
-            {
-                Write("#");
-            }
-            // Console.WriteLine();
-            WriteLine(
-                "                                                                 " +
-                "###################--" +
-                "HELLO AND WELCOME TO OUR ATM" +
-                "--###################"
-                );
+            UserMessages.Instance.WriteLayout(Layout_Messages.FULL_LINE);
+            UserMessages.Instance.WriteLayout(Layout_Messages.FRONT_SCREEN);
         }
 
         static public void logInScreen()
         {
-            WriteLine("PLEASE ENTER YOUR CUSTOMER-ID WITH YOUR PIN (IF YOU DONT HAVE AN ACCOUNT TYPE 1)");
+            UserMessages.Instance.WriteLayout(Layout_Messages.LOG_IN_SCREEN);
             Write("CUSTOMER-ID : ");
             int customerID;
             //exception handling for the case of entering a string instead of a number
@@ -38,7 +29,7 @@ namespace ATM
             }
             catch (FormatException)
             {
-                WriteLine("INVALID CUSTOMER-ID PLEASE ENTER A NUMBER");
+                UserMessages.Instance.WriteException(Exception_Messages.INVALID_CUSTOMER_ID);
                 System.Threading.Thread.Sleep(2000);
                 Clear();
                 logInScreen();
@@ -47,9 +38,16 @@ namespace ATM
             //handling the case of new customer
             if (customerID == 1)
             {
-                customers.BuildNewAccount();
-                dataBase.sentDataToDataBase(customers.CustomerID, customers.CustomerPIN, customers.FullName());
-                dataBase.updateAccountBalance(customers.CustomerID, 100);
+                if(!customers.BuildNewAccount())
+                {
+                    UserMessages.Instance.WriteException(Exception_Messages.INVALID_DESCRIPTION);
+                    System.Threading.Thread.Sleep(5000);
+                    Clear();
+                    logInScreen();
+                }
+                dataBase.SendDataToDataBase(customers.CustomerID, customers.CustomerPIN, customers.FullName());
+                dataBase.UpdateAccountBalance(customers.CustomerID, 100);
+            
             }
             //handling the case of existing customer
             else
@@ -63,8 +61,8 @@ namespace ATM
                 }
                 catch (FormatException)
                 {
-                    WriteLine("INVALID PIN PLEASE ENTER A NUMBER");
-                    System.Threading.Thread.Sleep(2000);
+                    UserMessages.Instance.WriteException(Exception_Messages.INVALID_PIN);
+                    System.Threading.Thread.Sleep(2500);
                     Clear();
                     logInScreen();
                     return;
@@ -72,7 +70,7 @@ namespace ATM
                 //handling the case of wrong customerID or PIN
                 if (dataBase.CustomerValidator(customerID, PIN) != (byte)validatorKeys.PASS)
                 {
-                    System.Threading.Thread.Sleep(2500);
+                    System.Threading.Thread.Sleep(3000);
                     Clear();
                     logInScreen();
                 }
@@ -89,19 +87,7 @@ namespace ATM
         static public void Menu()
         {
             //layouts
-            WriteLine
-            (
-                "####################################################################################################" +
-                "--MENU--" +
-                "####################################################################################################"
-            );
-            WriteLine
-            (
-                "TO WITHDRAWN MONEY PRESS (1)\n" +
-                "FOR ACCOUNT BALANCE PRESS (2)\n" +
-                "TO DEPOSIT MONEY PRESS (3)\n" +
-                "TO QUIT AND LOGOUT PRESS (0)"
-            );
+            UserMessages.Instance.WriteLayout(Layout_Messages.MENU_SCREEN);
             //handling the menu selection
             int menuSelection;
             //exception handling for the case of entering a string instead of a number
@@ -111,7 +97,7 @@ namespace ATM
             }
             catch (FormatException)
             {
-                WriteLine("INVALID SELECTION PLEASE ENTER A NUMBER");
+                UserMessages.Instance.WriteException(Exception_Messages.INVALID_CHOICE);
                 System.Threading.Thread.Sleep(2000);
                 Clear();
                 Menu();
@@ -130,7 +116,7 @@ namespace ATM
                 }
                 catch (FormatException)
                 {
-                    WriteLine("INVALID AMOUNT PLEASE ENTER A NUMBER");
+                    UserMessages.Instance.WriteException(Exception_Messages.INVALID_AMOUNT);
                     System.Threading.Thread.Sleep(2000);
                     Clear();
                     Menu();
@@ -140,8 +126,8 @@ namespace ATM
                 {
                     if (amount <= dataBase.AccountBalance(customers.CustomerID))
                     {
-                        dataBase.updateAccountBalance(customers.CustomerID, -amount);
-                        WriteLine("WITHDRAWN PROSEESS WENT SUCCESSFULLY, THANKS FOR USING OUR ATM");
+                        dataBase.UpdateAccountBalance(customers.CustomerID, -amount);
+                        UserMessages.Instance.WriteLayout(Layout_Messages.SUCCESSFUL_PROSSES);
                     }
                     else WriteLine("NOT ENOGH BALANCE!!");
                 }
@@ -156,6 +142,7 @@ namespace ATM
             //handling the case of checking account balance
             else if (menuSelection == 2)
             {
+                Clear();
                 Write("YOUR ACCOUNT BALANCE IS : ");
                 WriteLine(dataBase.AccountBalance(customers.CustomerID) + "$");
                 WriteLine("TO GET BACK TO MENU PRESS (1)\nTO QUIT PRESS (2)");
@@ -173,7 +160,7 @@ namespace ATM
                 }
                 catch (FormatException)
                 {
-                    WriteLine("INVALID AMOUNT PLEASE ENTER A NUMBER");
+                    UserMessages.Instance.WriteException(Exception_Messages.INVALID_AMOUNT);
                     System.Threading.Thread.Sleep(2000);
                     Clear();
                     Menu();
@@ -182,8 +169,8 @@ namespace ATM
                 //handling the case if the amount is between 1 and 500
                 if (amount >= 1 && amount <= 500)
                 {
-                    dataBase.updateAccountBalance(customers.CustomerID, amount);
-                    WriteLine("DEPOSIT PROSEESS WENT SUCCESSFULLY, THANKS FOR USING OUR ATM");
+                    dataBase.UpdateAccountBalance(customers.CustomerID, amount);
+                    UserMessages.Instance.WriteLayout(Layout_Messages.SUCCESSFUL_PROSSES);
                 }
                 //handling the case if the amount is not valid
                 else
@@ -195,14 +182,18 @@ namespace ATM
                 }
             }
             //handling the case of quiting
-            else if (menuSelection == 0)
+            else if (menuSelection == 4)
+            {
+                Console.WriteLine("SORRY CURRENTLY NOT AVALIABLE!!");
+            }
+            else if (menuSelection == 5)
             {
                 WriteLine("QUITING!!....."); return;
             }
             //handling the case of invalid selection
             else
             {
-                WriteLine("INVALID SELECTION (PLEASE ENTER 1,2,3,0 AS SHOWN)");
+                UserMessages.Instance.WriteException(Exception_Messages.INVALID_CHOICE);
                 //Make the user wait for 2 seconds before clearing the screen
                 System.Threading.Thread.Sleep(2000);
                 Clear();

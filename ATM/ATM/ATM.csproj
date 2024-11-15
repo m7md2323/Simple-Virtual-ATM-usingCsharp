@@ -40,6 +40,7 @@
     <Compile Include="Customer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="States.cs" />
+    <Compile Include="UserMessages.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
