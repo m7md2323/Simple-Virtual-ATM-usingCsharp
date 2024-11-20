@@ -38,15 +38,18 @@ namespace ATM
             //handling the case of new customer
             if (customerID == 1)
             {
-                if(!customers.BuildNewAccount())
+                if (!customers.BuildNewAccount())
                 {
                     UserMessages.Instance.WriteException(Exception_Messages.INVALID_DESCRIPTION);
                     System.Threading.Thread.Sleep(5000);
                     Clear();
                     logInScreen();
                 }
-                dataBase.SendDataToDataBase(customers.CustomerID, customers.CustomerPIN, customers.FullName());
-                dataBase.UpdateAccountBalance(customers.CustomerID, 100);
+                else
+                {
+                    dataBase.SendDataToDataBase(customers.CustomerID, customers.CustomerPIN, customers.FullName());
+                    dataBase.UpdateAccountBalance(customers.CustomerID, 100);
+                }
             
             }
             //handling the case of existing customer
