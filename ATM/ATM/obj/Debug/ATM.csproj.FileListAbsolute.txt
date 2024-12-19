@@ -5,3 +5,10 @@ C:\Users\user\OneDrive - just.edu.jo\Desktop\CsharpProjects\ATM\ATM\obj\Debug\AT
 C:\Users\user\OneDrive - just.edu.jo\Desktop\CsharpProjects\ATM\ATM\obj\Debug\ATM.csproj.CoreCompileInputs.cache
 C:\Users\user\OneDrive - just.edu.jo\Desktop\CsharpProjects\ATM\ATM\obj\Debug\ATM.exe
 C:\Users\user\OneDrive - just.edu.jo\Desktop\CsharpProjects\ATM\ATM\obj\Debug\ATM.pdb
+D:\CsharpProjects\ATM\ATM\bin\Debug\ATM.exe.config
+D:\CsharpProjects\ATM\ATM\bin\Debug\ATM.exe
+D:\CsharpProjects\ATM\ATM\bin\Debug\ATM.pdb
+D:\CsharpProjects\ATM\ATM\obj\Debug\ATM.csproj.AssemblyReference.cache
+D:\CsharpProjects\ATM\ATM\obj\Debug\ATM.csproj.CoreCompileInputs.cache
+D:\CsharpProjects\ATM\ATM\obj\Debug\ATM.exe
+D:\CsharpProjects\ATM\ATM\obj\Debug\ATM.pdb
